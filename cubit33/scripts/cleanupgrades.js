@@ -40,7 +40,7 @@ function(context, args) // confirm:false
 				if (!k3ys.includes(i.k3y))
 				{
 					k3ys.push(i.k3y)
-				} else if (/\b(tc2|tvf|xwz|uph|sa2|hc3|5c7|4jitu5|nfi|vth|vc2)/.test(i.k3y)){
+				} else if (/\b(vc2|tvf|xwz|uph|sa2|hc3|5c7|4jitu5|nfi|vth)/.test(i.k3y)){
 					a.push(i.i)
 					deleteNames.push(i.name+" i:"+i.i)
 				}

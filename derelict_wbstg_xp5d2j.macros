@@ -19,7 +19,7 @@ cubit33.scraper_t1{{target:#s.{0}}}
 ul
 cubit33.unlock_t1{{target:#s.{0}}}
 s2
-matr1x.t2_scrape {{t:#s.{0}, locs:"all"}}
+matr1x.t2_scrape {{t:#s.{0}, locs:"wb"}}
 s1jr
 cubit33.scraper_t1{{target:#s.{0}, jr:true}}
 xferToCubit

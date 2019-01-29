@@ -50,7 +50,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		c003_triad_2:colors[5],
 		DATA_CHECK:"",
 		l0cket:"cmppiq",
-		magnara:"data",
+		magnara:"stav",
 		sn_w_glock:0,
 		CON_SPEC:"LMN",
 		acct_nt:0
@@ -61,6 +61,8 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	skipRspC = false,
 	acct_nt_guesses = [0],
 	acct_nt_count = 0
+
+	kv["CON_SPEC"] = {call:a=>a.s.split(a.d).length-1}//credit to dtr
 
 	args=args||{}
 	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"user\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make small transactions inbetween runs."}
@@ -99,13 +101,17 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		}
 	
 		totalCalls += lastCalls, lastCalls = 0
-		if (rspI("ion terminated.") || rspI("system offline"))
+		if (rspI("Connection terminated"))
 		{
-			// #D(rsp)
 			rpt["success"] = true
 			break
 		} else {
 			if (skipRspC) {skipRspC=false} else {rspC()}
+		}
+		if (rspI("Connection terminated"))
+		{
+			rpt["success"] = true
+			break
 		}
 
 		if (rsp.includes(`\`NLOCK_UNLOCKED\``))
@@ -188,7 +194,6 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		}
 		else if (/\+{6}/.test(rsp))//DATA_CHECL
 		{
-			calls["DATA_CHECK"]++
 			let data_check = rsp.split("\n")
 			if (data_check.length != 3)
 			{
@@ -201,6 +206,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				string += #fs.lore.data_check({lookup:i}).answer
 			}
 			kv["DATA_CHECK"] = string
+			calls["DATA_CHECK"]++
 		}
 		else if (/balance/.test(rsp)) //sn_w_glock
 		{
@@ -268,6 +274,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 					kv["acct_nt"] = tempTx
 					acct_nt_guesses.push(tempTx)
 					rpt["acct_nt_guesses"] = acct_nt_guesses
+					calls["acct_nt"]++
 				}
 				else
 				{
@@ -322,9 +329,46 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				acct_nt_count++
 			}
 		}
+		else if (rspI("next three letters"))
+		{
+			let az = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""), // a to z
+			sq = /\w{3}(?=\n)/.exec(rsp)[0].split("").map(x=>az.indexOf(x)), // sequence
+			nr = [sq[2]-sq[1],sq[1]-sq[0]]
+			kv["CON_SPEC"] =
+			az[sq[2]+nr[1]]					+
+			az[sq[2]+nr[1]  +nr[0]] +
+			az[sq[2]+nr[1]*2+nr[0]]
+			calls["CON_SPEC"]++
+		}
+		else if (rspI("magnara"))
+		{
+			let letters = /\b\w+$/.exec(rsp)[0]
+			let answers = #fs.dictionary.lookup({letters})
+			kv["magnara"] = answers.msg[Math.floor(Math.random()*answers.msg.length)]
+		}
+		else if (rspI("To unlock, please load the appropriate k3y:"))
+		{
+			let reqK3y = /(......)$/.exec(rsp)[1]
+			rpt["l0ckbox"] = reqK3y
+			let error = true
+			for (let i of k3ys)
+			{
+				if (i.k3y.includes(reqK3y))
+				{
+					error = false
+					#ms.sys.manage({load:i.i})
+					break
+				}
+			}
+			if (error)
+			{
+				rpt["msg"] = "error, l0ckbox requests absent key:"+reqK3y
+				break
+			}
+		}
 		else
 		{
-			rpt["msg"] = "error, unrecognized input"
+			rpt["msg"] = "error, unrecognized input, "+(lastCalls+totalCalls)
 			break
 		}
 	}
@@ -343,22 +387,6 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	// #db.i(rpt)
 	if (args.report) return rpt
 
-	function ezDigit(key){
-		let digit = 0;
-		if (key.includes("prime"))
-		{
-			digit = 1;
-		}
-		while (tmo())
-		{
-			kv[key] = digit++
-			digit>9?digit++:null
-			if (!rspC().includes(n1))
-			{
-				break
-			}
-		}
-	}
 	function rspC()
 	{
 		lastrsp = rsp
@@ -366,7 +394,6 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		lastCalls++
 		return rsp
 	}
-
 
 	function rspI(x)
 	{
