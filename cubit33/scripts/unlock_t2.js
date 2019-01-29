@@ -131,7 +131,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				}), rgx=/withdrawal|deposit/
 				kv["acct_nt"] = 0
 				rspC()
-				if (!/spent|earned|What was|withdrawal|deposit/.test(rsp))continue
+				if (!/(spent|earned|What was|withdrawal|deposit)/.test(rsp))continue
 				
 				if(rgx.test(rsp))
 				{

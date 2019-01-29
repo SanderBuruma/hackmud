@@ -56,7 +56,10 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		acct_nt:0
 	},
 	correctKv = [],
-	guessedKv = []
+	guessedKv = [],
+	txs,
+	skipRspC = false,
+	acct_nt_guesses = []
 
 	args=args||{}
 	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"user\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make small transactions inbetween runs."}
@@ -89,7 +92,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			rpt["msg"] = "error, target does not exist"
 			break
 		}
-		if (rspI("chain your hardline"))
+		if (rspI("chain your hardline") || rspI("kernel"))
 		{
 			return rsp
 		}
@@ -101,7 +104,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			rpt["success"] = true
 			break
 		} else {
-			rspC()
+			if (skipRspC) {skipRspC=false} else {rspC()}
 		}
 
 		if (rsp.includes(`\`NLOCK_UNLOCKED\``))
@@ -176,15 +179,16 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				}
 
 			}
-			else if (/correct security k3y/.test(rsp))// l0cket
+			else if (/correct security k3y/.test(rsp))//l0cket
 			{
 				calls.l0cket++
 				kv.l0cket = l0cket.shift()
 			}
 		}
-		else if (/\+{6}/.test(rsp))
+		else if (/\+{6}/.test(rsp))//DATA_CHECL
 		{
-			let data_check = rspC().split("\n")
+			calls["DATA_CHECK"]++
+			let data_check = rsp.split("\n")
 			if (data_check.length != 3)
 			{
 				rpt["msg"] = "error, DATA_CHECK error, less then 3 questions"
@@ -197,7 +201,104 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			}
 			kv["DATA_CHECK"] = string
 		}
+		else if (/balance/.test(rsp)) //sn_w_glock
+		{
+			calls["sn_w_glock"]++
+			for (let i of glock)
+			{
+				for (let j in i)
+				{
+					if (rspI(j))
+					{
+						#hs.cubit32.xfer({amount:i[j]})
+						if (kv.acct_nt != "undefined")
+						{
+							rpt["acct_nt_1"] = kv.acct_nt
+							kv.acct_nt = 0
+						}
+					}
+				}
+			}
+		}
+		else if (/(spent|earned|What was|withdrawal|deposit)/.test(rsp)) //acct_nt
+		{
+			let skipTxsCalc = true
+			calls["acct_nt"]++
+			let count = 0
+			if (!txs) txs = #hs.accts.transactions({count:25}).map(e =>
+			{
+				e.i = count++
+				e["time"] = parseInt(lib.to_game_timestr(e.time).replace(".",""));
+				(e.recipient==caller)?null:e["amount"]*=-1
+				return e
+				skipTxsCalc = false
+			})
 
+			if (/withdrawal|deposit/.test(rsp)) //only one transaction
+			{
+				let ts = parseInt(/(\d+\.\d+)/.exec(rsp)[1].replace(".",""))
+
+				if (!skipTxsCalc)
+				{
+					txs = txs.map(e=>
+					{
+						e.time = Math.abs(e.time-ts)
+						e.amount = Math.abs(e.amount)
+						return e
+					}).sort((a,b)=>{return b.time-a.time})
+					
+					if (/withdrawal/.test(rsp))
+					{
+						txs = txs.filter(e=>
+						{
+							return e.recipient != caller
+						})
+					}
+					else
+					{
+						txs = txs.filter(e=>
+						{
+							return e.recipient == caller
+						})
+					}
+				}
+
+				let tempTx = txs.shift().amount
+				if (acct_nt_guesses.indexOf(tempTx) == -1)
+				{
+					kv["acct_nt"] = tempTx
+					acct_nt_guesses.push(tempTx)
+				}
+				else
+				{
+					skipRspC = true
+				}
+			}
+			else // many transactions evaluation
+			{
+				let ts = /(\d+\.\d+)\D+(\d+\.\d+)/.exec(rsp)
+				if (!skipTxsCalc)
+				{
+					
+					txs = txs.filter(e=>{e.time=>ts[1]&&e.time<=ts[2]})
+					return {txs,ts}
+					if (!/ net /.test(rsp))
+					{
+						if (/with memos/.test(rsp))
+						{
+							txs = txs.filter(e=>{e.memo})
+						}
+						else
+						{
+							txs = txs.filter(e=>{!e.memo})
+						}
+					}
+				}
+
+				
+
+			}
+		}
 	}
 	rpt["kv"] = kv
 	rpt["rsp"] = rsp
