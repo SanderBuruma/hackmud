@@ -381,10 +381,10 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	rpt["caller"] = caller
 	rpt["target"] = args.target.name
 	rpt["xfer"] = args.xfer
-	rpt["script"] = "cubit33.unlock_t2b"
+	rpt["script"] = context.this_script
 	// #D(rpt)
 
-	// #db.i(rpt)
+	#db.i(rpt)
 	if (args.report) return rpt
 
 	function rspC()
