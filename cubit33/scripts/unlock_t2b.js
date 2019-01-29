@@ -59,7 +59,8 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	guessedKv = [],
 	txs,
 	skipRspC = false,
-	acct_nt_guesses = []
+	acct_nt_guesses = [0],
+	acct_nt_count = 0
 
 	args=args||{}
 	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"user\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make small transactions inbetween runs."}
@@ -85,7 +86,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		
 	let lastCalls = 0, totalCalls = 0
 	rspC()
-	while (tmo())
+	while (tmo(4e3))
 	{
 		if (!rsp)
 		{
@@ -223,15 +224,14 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		else if (/(spent|earned|What was|withdrawal|deposit)/.test(rsp)) //acct_nt
 		{
 			let skipTxsCalc = true
-			calls["acct_nt"]++
 			let count = 0
 			if (!txs) txs = #hs.accts.transactions({count:25}).map(e =>
 			{
 				e.i = count++
 				e["time"] = parseInt(lib.to_game_timestr(e.time).replace(".",""));
 				(e.recipient==caller)?null:e["amount"]*=-1
-				return e
 				skipTxsCalc = false
+				return e
 			})
 
 			if (/withdrawal|deposit/.test(rsp)) //only one transaction
@@ -268,6 +268,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				{
 					kv["acct_nt"] = tempTx
 					acct_nt_guesses.push(tempTx)
+					rpt["acct_nt_guesses"] = acct_nt_guesses
 				}
 				else
 				{
@@ -277,27 +278,66 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			else // many transactions evaluation
 			{
 				let ts = /(\d+\.\d+)\D+(\d+\.\d+)/.exec(rsp)
+				ts.shift()
+				ts = ts.map(e=>{return parseInt(e.replace(".",""))})
+				
 				if (!skipTxsCalc)
 				{
-					
-					txs = txs.filter(e=>{e.time=>ts[1]&&e.time<=ts[2]})
-					return {txs,ts}
+					txs = txs.filter(e=>{
+						return !(e.time<ts[0])&&!(e.time>ts[1])
+					})
 					if (!/ net /.test(rsp))
 					{
 						if (/with memos/.test(rsp))
 						{
-							txs = txs.filter(e=>{e.memo})
+							txs = txs.filter(e=>{return e.memo})
 						}
 						else
 						{
-							txs = txs.filter(e=>{!e.memo})
+							txs = txs.filter(e=>{return !e.memo})
 						}
 					}
 				}
-
+				// return {ts,skipTxsCalc,txs}
+				let numEarly = 0, numLate = 0
+				txs.forEach(e => 
+				{
+					if (e.time == ts[0]) numEarly++
+					else if (e.time == ts[1]) numLate++
+				})
+				numEarly = Math.floor(Math.random()*(numEarly+1))
+				if (ts[0] == ts[1]) //if this is true the possible number of guesses is roughly n*(n+1)/2
+				{
+					numLate = Math.floor(Math.random()*(txs.length-numEarly))
+				} 
+				else
+				{
+					numLate = Math.floor(Math.random()*(numLate+1))
+				}
 				
+				rpt["acct_nt_rangemin"] = txs[numLate].i
+				rpt["acct_nt_rangemax"] = txs[txs.length-numEarly-1].i
+				let guess = txs.slice(numLate,-numEarly|1e2)
 
+				guess = guess.reduce((a,o)=>{return a+o.amount},0)
+				if (!/ net /.test(rsp)) guess = Math.abs(guess)
+				if (acct_nt_guesses.indexOf(guess) == -1)
+				{
+					acct_nt_guesses.push(guess)
+					rpt["acct_nt_guesses"] = acct_nt_guesses
+					kv["acct_nt"] = guess
+					calls["acct_nt"]++
+				}
+				else
+				{
+					skipRspC = true
+				}
 			}
+		}
+		else
+		{
+			rpt["msg"] = "error, unrecognized input"
+			break
 		}
 	}
 	rpt["kv"] = kv
