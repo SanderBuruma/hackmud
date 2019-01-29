@@ -36,10 +36,10 @@ function(context, args)
 		{
 			return {rsp:response, kp:keyParams, msg:`timeout ${Date.now()-_START} ms`, lock:lock}
 		}
-		
+	
 		if (response.includes("Denied access by"))
 		{
-			
+		
 			//new lock
 			lock = response.match(/\S+(?= lock\.)/)[0]
 			lock = lock.substr(2,lock.length-3); //find the lock name

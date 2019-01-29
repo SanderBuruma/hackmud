@@ -5,7 +5,7 @@ function(context, args)
 
 	let msg = [], call = [], unit
 	#D({msg:"debug message 0n3"})
-	
+
 	// call.push({call:x=>#fs.dtr.t1_lock_sim(x)})
 	// call.push({call:x=>#fs.dtr.t1_lock_sim(x)})
 	// call.push({call:x=>#fs.dtr.t1_lock_sim(x)})
@@ -19,14 +19,14 @@ call.push({call:x=>#ns.abandoned_ddttl_ixpes0.entry_y6j15y(x)})
 call.push({call:x=>#ns.anon_ddttl_h1fa0r.access_elxgmt(x)})
 // call.push({call:x=>#ns.anon_ddttl_r7t1ib.pubinfo_20abgs(x)})
 
-	
+
 
 	while (call.length)
 	{
 		unit = call.pop()
 		unlock({target:unit})
 	}
-	
+
 	function unlock(scriptor)
 	{
 		msg.push(#fs.cubit34.unlock_t1(scriptor))
@@ -36,7 +36,7 @@ call.push({call:x=>#ns.anon_ddttl_h1fa0r.access_elxgmt(x)})
 	#fs.chats.tell({to:"cubit33",msg:stringify})
 
 	return {err:false, msg:msg}
-	
+
 	//replace npc locs with fancy scriptor voodooo
 	//\w*_jr\w*\.\w*
 	//call.push({call:x=>#ns.$0(x)})

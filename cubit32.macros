@@ -84,3 +84,5 @@ decor
 cubit33.decorruptor {{ target:#s.{0}, args:"{1}" }}
 qrs
 dtr.qr {{ target:#s.{0}, a:{username:"{1}", cmd:"orders_qrs"}}}
+hash
+cubit33.cubit_hash128 {{ hash:"{0}" }}

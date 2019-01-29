@@ -57,5 +57,5 @@ function(context, args) // confirm:false
 	} else {
 		return "\nNo worthless items found\n"+deleteNames.join('`V,` ')+"\n\nlist of `Nk3ys`:\n"+k3ys2.join("\n")
 	}
-	
+
 }

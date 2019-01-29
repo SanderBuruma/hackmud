@@ -14,7 +14,7 @@ function(context, args)
 			debug = [],
 			times = {},
 			report = {}
-		
+	
 	rspC()
 
 	// return typeof args.target

@@ -63,13 +63,13 @@ function(context, args) // target:#s.halperyon.public
 		else if(r==c++){target = {call:x=>#fs.weyland.public(x)}}
 		else if(r==c++){target = {call:x=>#fs.world_pop.public(x)}}
 	}
-	
+
 	//get the key and value info from the command input reply
 	let commands = target.call({}).match(/[a-z_]+:"?[a-z_]+"?/gi)[0].match(/\w+/gi);
 
 	//get the command values from the front page
 	let pages = target.call().split(/\n/gi).pop().match(/[a-z_]+/gi);
-	
+
 	//get possible passwords
 	keyVals = {};
 	keyVals[commands[0]] = pages[1];
@@ -84,7 +84,7 @@ function(context, args) // target:#s.halperyon.public
 		temp = temp.join('\n');
 	}
 	let projects = temp.match(/[a-z0-9]+[._][a-z0-9]+/gi);
-	
+
 	//loop through passwords till we have the right one
 	keyVals = {};
 	let password;
@@ -127,7 +127,7 @@ function(context, args) // target:#s.halperyon.public
 			}
 		}
 	}
-	
+
 
 	return members.sort();
 }

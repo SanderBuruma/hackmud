@@ -39,7 +39,7 @@ function(context, args)
 		}
 	}
 	delTrns();
-	
+
 	if (!args.debug) {
 		debug = false;
 	}

@@ -42,7 +42,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	}
 
 	#ms.accts.xfer_gc_to({to:args.xfer,amount:bal})
-	
+
 	for (let u of upgrades)
 	{
 		if (u.k3y)
@@ -54,7 +54,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			}
 		}
 	}
-		
+	
 	let lastCalls = 0, totalCalls = 0
 	rspC()
 	while (tmo())
@@ -68,7 +68,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		{
 			return rsp
 		}
-		
+	
 		if (lk && lk.length)
 		{
 			calls[lk] = lastCalls
@@ -78,21 +78,21 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		{
 			rspC()
 		}
-		
+	
 		if (rspI("Denied acc")) // lock found
 		{
 			lk = /`N(\S*?)` lock\./.exec(rsp)[1]
-			
+		
 			if (lk.includes("magnara"))
 			{
-				
+			
 				kv["magnara"] = ""
 				rspC()
 				let last4 = /\b\w+$/.exec(rsp)[0].split(""),
 				gsses = [], gss, error=true // guesses and guess
 				while (tmo())
 				{
-					
+				
 					let last4copy = Array(...last4)
 					gss = []
 					while (last4copy.length)
@@ -119,7 +119,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 					rpt["msg"] = "error, unknown magnara answer"
 					break
 				}
-				
+			
 			}
 			else if (lk.includes("acct_nt"))
 			{
@@ -132,7 +132,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				kv["acct_nt"] = 0
 				rspC()
 				if (!/(spent|earned|What was|withdrawal|deposit)/.test(rsp))continue
-				
+			
 				if(rgx.test(rsp))
 				{
 					while (txs.length)
@@ -166,7 +166,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 					ts[1] = parseInt(ts[1].replace(".",""))
 					ts[2] = parseInt(ts[2].replace(".",""));
 					if (!/ net /.test(rsp)){/without/.test(rsp)?txs=txs.filter(e=>!e.memo):txs=txs.filter(e=>e.memo)} //remove transactions with or without memos if no net GC is asked
-					
+				
 					let nTM=[], txMid = [], tLL = 0 //nTM = not transaction middle, tLL = transaction lead length
 					txs.forEach(e => {
 						if (e.time==ts[2])tLL++
@@ -198,7 +198,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 							sum-=nNM.pop().amount
 						}
 						if (end) break
-						
+					
 						count++
 						if (count > nTM.length)
 						{

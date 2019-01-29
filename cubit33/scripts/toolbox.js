@@ -59,7 +59,7 @@ function(context, args) // info:true
 	else if (args.safescript)
 	{
 		args.tier?0:args.tier=3
-		let temp = #fs.scripts.get_level({name:args.safescript.name}) 
+		let temp = #fs.scripts.get_level({name:args.safescript.name})
 		if (temp < args.tier) {return `script sec level too low: `+l.get_security_level_name(temp)} else {return args.safescript.call()}
 	}
 

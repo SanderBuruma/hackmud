@@ -32,16 +32,16 @@ function(context, args)//target:#s.cyberdine.public,args:"arg1:value1,arg2:value
 		response = response.replace(crp,"§")
 		response2=response2.replace(crp,"§")
 	}
-	
+
 	while (Date.now()-_START<3900)
 	{
-		
+	
 		let corIndex = response.indexOf("§")
 		if (corIndex == -1)
 		{
 			return response
 		}
-		
+	
 		let r2char = response2.substr(corIndex,1)
 		if (r2char == "§")
 		{
@@ -55,7 +55,7 @@ function(context, args)//target:#s.cyberdine.public,args:"arg1:value1,arg2:value
 			}
 			continue
 		}
-		
+	
     response = replaceAt(response,corIndex,r2char)
 
 	}

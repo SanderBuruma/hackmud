@@ -1,11 +1,11 @@
 function(C,A){
-   
+  
   //from ♪Leming☼#1700 on discord
   let pw = "password"
   , { p } = A = (A) ? A : {}
   , v = (
   ( _=>( C.caller=="admin_name" ) ? 2 :
-   ( ( p===pw ) ? 1 : 0  )    
+   ( ( p===pw ) ? 1 : 0  )   
   )()
   )
  , stf = T=>JSON.stringify(T)
@@ -43,7 +43,7 @@ function(C,A){
          else X = #db.r(q)
      }
   return { c, q, u, a, X }
- }   
+ }  
 //---------------------------------------------\\M\\A\\I\\N\\
  return main(A)
 }

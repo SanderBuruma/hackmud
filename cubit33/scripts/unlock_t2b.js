@@ -71,7 +71,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	}
 
 	bal>0?#ms.accts.xfer_gc_to({to:args.xfer,amount:bal}):0
-	
+
 	for (let u of upgrades)
 	{
 		if (u.k3y)
@@ -83,7 +83,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			}
 		}
 	}
-		
+	
 	let lastCalls = 0, totalCalls = 0
 	rspC()
 	while (tmo(4e3))
@@ -97,7 +97,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		{
 			return rsp
 		}
-		
+	
 		totalCalls += lastCalls, lastCalls = 0
 		if (rspI("ion terminated.") || rspI("system offline"))
 		{
@@ -246,7 +246,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 						e.amount = Math.abs(e.amount)
 						return e
 					}).sort((a,b)=>{return b.time-a.time})
-					
+				
 					if (/withdrawal/.test(rsp))
 					{
 						txs = txs.filter(e=>
@@ -280,7 +280,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				let ts = /(\d+\.\d+)\D+(\d+\.\d+)/.exec(rsp)
 				ts.shift()
 				ts = ts.map(e=>{return parseInt(e.replace(".",""))})
-				
+			
 				if (!skipTxsCalc)
 				{
 					txs = txs.filter(e=>{
@@ -300,25 +300,27 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				}
 				// return {ts,skipTxsCalc,txs}
 				let numEarly = 0, numLate = 0
-				txs.forEach(e => 
+				txs.forEach(e =>
 				{
 					if (e.time == ts[0]) numEarly++
 					else if (e.time == ts[1]) numLate++
 				})
+
 				numEarly = Math.floor(Math.random()*(numEarly+1))
-				if (ts[0] == ts[1]) //if this is true the possible number of guesses is roughly n*(n+1)/2
+				if (ts[0] == ts[1]) //if these timestamps are the same the possible number of guesses is roughly n*(n+1)/2
 				{
 					numLate = Math.floor(Math.random()*(txs.length-numEarly))
-				} 
+				}
 				else
 				{
 					numLate = Math.floor(Math.random()*(numLate+1))
 				}
-				
-				rpt["acct_nt_rangemin"] = txs[numLate].i
-				rpt["acct_nt_rangemax"] = txs[txs.length-numEarly-1].i
-				let guess = txs.slice(numLate,-numEarly|1e2)
-
+			
+				let guess = txs.slice(0,(-8)||1e2)
+				// #D({numEarly,numLate,guessLen:guess.length})
+				rpt["acct_nt_rangemin"] = guess[numLate].i
+				rpt["acct_nt_rangemax"] = guess[guess.length-numEarly-1].i
+			
 				guess = guess.reduce((a,o)=>{return a+o.amount},0)
 				if (!/ net /.test(rsp)) guess = Math.abs(guess)
 				if (acct_nt_guesses.indexOf(guess) == -1)
@@ -332,6 +334,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				{
 					skipRspC = true
 				}
+				acct_nt_count++
 			}
 		}
 		else
