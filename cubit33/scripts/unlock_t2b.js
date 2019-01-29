@@ -212,11 +212,10 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 					if (rspI(j))
 					{
 						#hs.cubit32.xfer({amount:i[j]})
-						if (kv.acct_nt != "undefined")
-						{
-							rpt["acct_nt_1"] = kv.acct_nt
-							kv.acct_nt = 0
-						}
+						kv["acct_nt_1"] = kv.acct_nt
+						kv.acct_nt = 0
+						acct_nt_guesses = [0]
+						txs = undefined
 					}
 				}
 			}
@@ -298,28 +297,14 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 						}
 					}
 				}
-				// return {ts,skipTxsCalc,txs}
 				let numEarly = 0, numLate = 0
-				txs.forEach(e =>
-				{
-					if (e.time == ts[0]) numEarly++
-					else if (e.time == ts[1]) numLate++
-				})
 
-				numEarly = Math.floor(Math.random()*(numEarly+1))
-				if (ts[0] == ts[1]) //if these timestamps are the same the possible number of guesses is roughly n*(n+1)/2
-				{
-					numLate = Math.floor(Math.random()*(txs.length-numEarly))
-				}
-				else
-				{
-					numLate = Math.floor(Math.random()*(numLate+1))
-				}
-			
-				let guess = txs.slice(0,(-8)||1e2)
-				// #D({numEarly,numLate,guessLen:guess.length})
-				rpt["acct_nt_rangemin"] = guess[numLate].i
-				rpt["acct_nt_rangemax"] = guess[guess.length-numEarly-1].i
+				numEarly = Math.floor(Math.random()*txs.length)
+				numLate = Math.floor(Math.random()*(txs.length-numEarly))
+				
+				let guess = txs.slice(numLate,(-numEarly)||1e2)
+				rpt["acct_nt_rangemin"] = numLate
+				rpt["acct_nt_rangemax"] = numEarly
 			
 				guess = guess.reduce((a,o)=>{return a+o.amount},0)
 				if (!/ net /.test(rsp)) guess = Math.abs(guess)
