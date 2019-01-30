@@ -1,4 +1,4 @@
-function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3,report:true,xfer:"cubit32"
+function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3,report:true,xfer:"youralthere"
 {
 	let
 	rsp, lastrsp,
@@ -6,7 +6,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	ez = ["open","release","unlock"],
 	colors = "red,orange,yellow,lime,green,cyan,blue,purple".split(','),
 	n1 = "is not the",
-	l0cket = "sa23uw,tvfkyq,uphlaw,vc2c7q,xwz7ja,i874y3,72umy0,5c7e1r,hc3b69,nfijix,4jitu5,6hh8xw,9p65cu,j1aa4n,eoq6de,vthf6e".split(','),
+	l0cket = "sa23uw,tvfkyq,uphlaw,vc2c7q,xwz7ja,i874y3,72umy0,5c7e1r,hc3b69,nfijix,d4bj4k,4jitu5,6hh8xw,9p65cu,j1aa4n,eoq6de,vthf6e,cmppiq,pmvr1q,afgny5,pzqsa0,voon2h,nyi5u2,vzdt6m,54r1cg,d9j270".split(','),
 	primes = [3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,57,59,61,67,71,73,79,83,89,91,97],
 	calls = {
 		EZ:0,
@@ -65,14 +65,21 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	kv["CON_SPEC"] = {call:a=>a.s.split(a.d).length-1}//credit to dtr
 
 	args=args||{}
-	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"youruserhere\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make 1GC transactions inbetween runs.\n\n/u2 = cubit33.unlock_t2{{target:#s.{0},report:true,xfer:\"cubit32\"}}"}
+	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"youruserhere\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make 1GC transactions inbetween runs.\nadd noxfer:true to disable money transfers to the alt user (this disables sn_w_glock unlocking) \n\n/u2 = cubit33.unlock_t2{{target:#s.{0},report:true,xfer:\"cubit32\"}}"}
 	if (!lib.is_def(args.xfer)) return "Please pick an xfer:\"user\" to transfer excess funds to"
-	if (/^cubit3[2-5]$/.test(args.xfer) && !/^cubit3[3-5]$/.test(caller) || args.xfer == caller)
+	// if (/^cubit3[2-5]$/.test(args.xfer) && !/^cubit3[3-5]$/.test(caller) || args.xfer == caller)
+	// {
+	// 	return "Please select an xfer:\"user\" which you control"
+	// }
+	if (/^cubit3[2-5]$/.test(args.target.name) && !/^cubit3[2-5]$/.test(caller))
 	{
-		return "please select an xfer:\"user\" which you control"
+		return "Please don't target my alts with my own script, thank you very much!"
 	}
 
-	bal>0?#ms.accts.xfer_gc_to({to:args.xfer,amount:bal}):0
+	if (typeof args.noxfer == "undefined" && bal>0) 
+	{
+		#ms.accts.xfer_gc_to({to:args.xfer,amount:bal})
+	}
 
 	for (let u of upgrades)
 	{
@@ -189,7 +196,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			else if (/correct security k3y/.test(rsp))//l0cket
 			{
 				calls.l0cket++
-				kv.l0cket = l0cket.shift()
+				kv["l0cket"] = l0cket.shift()
 			}
 		}
 		else if (/\+{6}/.test(rsp))//DATA_CHECL

@@ -24,16 +24,6 @@ skriipts
 preen
 googl.search
 
-# l0cket answers:
-
-6hh8xw
-cmppiq
-sa23uw
-tvfkyq
-uphlaw
-vc2c7q
-xwz7ja
-
 ### locks
 
 # T1
@@ -138,7 +128,7 @@ return #db.something
 $1.$2\n
 
 2.  matches all npc locations and allows you to replace with nothing, removing them from autocomplete selectively
-,..(abandoned|derelict|un?known|anonymous|anon|unidentified)_\w{2,5}_\w{6}.{6}\w+\S{8}
+,..(aba?ndo?ne?d|derelict|un?known|anonymous|anon|unidentified)_\w{2,5}_\w{6}.{6}\w+\S{8}
 
 3.  matches every line WITHOUT ddttl in it
 ^(?!.*ddttl).*\n

@@ -2,7 +2,7 @@ function(context, args) // info:true
 {
 	var caller = context.caller
 	var l = #fs.scripts.lib()
-	let infoString = "This is my toolbox, current options:\n\n`AKey Loader` - `Nk3y`:`V\"string\"` - loads or unloads the first available key with that value, if available\ncubit33.toolbox {k3y:\"4jixaw\"}\n\n`AMarket Sort` - market:true, name:\"string\", key:\"key\" (the referenced key must be numerical, ex. chars) - items are Sorted by the key:value\ncubit33.toolbox {market:true, name:\"k3y_v2\", key:\"k3y\"}\n\n`ATransactions` - transactions:true to see a handy display of all your transactions\ncubit33.toolbox {transactions:true,page:1}\n\n`ASafescript` - safescript:#s.user.script to check a user script and run it if it is fullsec. Include safescript_level:3 to run high sec scripts. args:[argument:value,argument2:\"string\"] to pass along arguments for the script (no spaces)\nmacro:\n/safe = cubit33.toolbox {{ safescript:#s.{0} }}",
+	let infoString = "This is my toolbox, current options:\n\n`AKey Loader` - `Nk3y`:`V\"string\"` - loads or unloads the first available key with that value, if available\ncubit33.toolbox {k3y:\"4jixaw\"}\n\n`AMarket Sort` - market:true, name:\"string\", key:\"key\" (the referenced key must be numerical, ex. chars) - items are Sorted by the key:value\ncubit33.toolbox {market:true, name:\"k3y_v2\", key:\"k3y\"}\n\n`ATransactions` - transactions:true to see a handy display of all your transactions\ncubit33.toolbox {transactions:true,page:1}\n\n`ASafescript` - safescript:#s.user.script to check a user script and run it if it is fullsec. Include safescript_level:3 to run high sec scripts. a:[argument:value,argument2:\"string\"] to pass along arguments for the script (no spaces)\nmacro:\n/safe = cubit33.toolbox {{ safescript:#s.{0} }}",
 	error = true
 	#db.i({script:context.this_script,args,context})
 
@@ -58,16 +58,34 @@ function(context, args) // info:true
 	}
 	else if (args.safescript)
 	{
-		args.tier?0:args.tier=3
+		args.safescript_level?0:args.safescript_level=3
 		let temp = #fs.scripts.get_level({name:args.safescript.name})
-		if (temp < args.tier) {return `script sec level too low: `+l.get_security_level_name(temp)} else {return args.safescript.call()}
+		if (temp < args.safescript_level)
+		{
+			return `script sec level too low: `+l.get_security_level_name(temp)
+		}
+		else
+		{
+			if (typeof args.a == "undefined")
+			{
+				return args.safescript.call()
+			}
+			else
+			{
+				return args.safescript.call(args.a)
+			}
+		}
+	}
+	else if (args.k3ysxfer)
+	{
+		
 	}
 
 	function pad(num, size, char)
 	{
 		char?0:char=" "
 		var s = num+"";
-		while (s.length < size) s = " " + s;
+		while (s.length < size) s = char + s;
 		return s;
 	}
 	function tmo(x)

@@ -49,7 +49,7 @@ users.last_action{{name:"{0}"}}
 xfer2
 accts.xfer_gc_to{{to:"cubit32",amount:{0}}}
 u2
-cubit33.unlock_t2{{target:#s.{0},report:true,xfer:"cubit32"}}
+cubit33.unlock_t2{{target:#s.{0},report:true,xfer:"cubit32",noxfer:true}}
 s1b
 ast.t1_scraper {{ tar:#s.{0}.public, page:0 }}
 locksim

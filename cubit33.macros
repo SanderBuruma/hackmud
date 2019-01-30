@@ -19,7 +19,7 @@ cubit33.scraper_t1{{target:#s.{0}}}
 ul
 cubit33.unlock_t1{{target:#s.{0}}}
 s2
-matr1x.t2_scrape {{t:#s.{0}, locs:"all"}}
+matr1x.t2_scrape {{t:#s.{0}}}
 s1jr
 cubit33.scraper_t1{{target:#s.{0}, jr:true}}
 xferToCubit
@@ -49,7 +49,7 @@ users.last_action{{name:"{0}"}}
 xfer2
 accts.xfer_gc_to{{to:"cubit32",amount:{0}}}
 u2
-cubit33.unlock_t2{{target:#s.{0},report:true,xfer:"cubit32"}}
+cubit33.unlock_t2{{target:#s.{0},report:true,xfer:"cubit32",noxfer:true}}
 s1b
 ast.t1_scraper {{ tar:#s.{0}.public, page:0 }}
 locksim
@@ -86,3 +86,21 @@ qrs
 dtr.qr {{ target:#s.{0}, a:{username:"{1}", cmd:"orders_qrs"}}}
 hash
 cubit33.cubit_hash128 {{ hash:"{0}" }}
+safe2
+cubit33.toolbox{{safescript:#s.{0},a:{[{1}]}}}
+safe1
+cubit33.toolbox {{ safescript:#s.{0} , a:{{{1}}}}}
+expt
+sys.expose_transactions {{ target:"{0}" }}
+expa
+sys.expose_access_log {{ target:"{0}" }}
+inflog
+sys.write_log {{ target:"{0}", msg:{1} }}
+expb
+sys.expose_balance {{target:"{0}"}}
+infgc
+sys.xfer_gc_from {{ target:"{0}", amount:{1} }}
+s2wipe
+matr1x.t2_scrape {wipe:"all"}
+s2locs
+matr1x.t2_scrape {{locs:"{0}"}}
