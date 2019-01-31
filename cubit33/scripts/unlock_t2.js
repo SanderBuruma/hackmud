@@ -97,14 +97,15 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	rspC()
 	while (tmo(4e3))
 	{
-		if (!rsp)
-		{
-			rpt["msg"] = "error, target does not exist"
-			break
+		try {
+			if (rspI("chain your hardline") || rspI("kernel")) // this will generate an error if rsp.msg includes "hardline", so this condition wil never be met
+			{
+				return rsp
+			}
 		}
-		if (rspI("chain your hardline") || rspI("kernel"))
+		catch (err)
 		{
-			return rsp
+			return {rsp,err}
 		}
 	
 		totalCalls += lastCalls, lastCalls = 0
@@ -114,11 +115,6 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			break
 		} else {
 			if (skipRspC) {skipRspC=false} else {rspC()}
-		}
-		if (rspI("Connection terminated"))
-		{
-			rpt["success"] = true
-			break
 		}
 
 		if (rsp.includes(`\`NLOCK_UNLOCKED\``))
@@ -372,6 +368,12 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				rpt["msg"] = "error, l0ckbox requests absent key:"+reqK3y
 				break
 			}
+		}
+		else if (rspI("Connection terminated"))
+		{
+			rpt["success"] = true
+			rpt["msg"] = undefined
+			break
 		}
 		else
 		{
