@@ -2,17 +2,6 @@
 
 This is my online stratchpad and respository for sharing of hackmud scripts and information
 
-### scripts
-
-you make a script named bot_brain on that user
-it can be private
-feed user with some money
-load cron bot
-and dont touch this user
-I mean, dont run scripts on it, dont log into it etc
-or cron will skip its action
-then every <cooldown> seconds cron will eat <cost>GC and run bot_brain script
-
 ### scratchpad
 
 utility users, ls.users on these to find out what scripts they offer
@@ -48,7 +37,7 @@ l0cket: asks for a k3y value
 (l0ckbox|magnara|CON_SPEC|acct_nt|glock)
 
 acct_nt:
-  1. Need to know the total spent on transactions without memos between 
+  1. Need to know the total spent on transactions without memos between
   2. Need to know the total earned on transactions without memos between
   3. What was the net GC between
   4. Get me the amount of a large deposit near
@@ -76,7 +65,7 @@ sn_w_glock: your acc balance must be this amount
   meaning       42
   Not a monolithic balance.
 
-l0ckbox: To unlock, please load the appropriate k3y: 
+l0ckbox: To unlock, please load the appropriate k3y:
 t1 keys: tc2, tvf, xwz, uph, sa2, 72u, cmp, i87, eoq, 6hh, 9p6, fr8, pmv, xwz, ell, xfn, sa2, 72u, uph, cmp, sa2, 6hh, xwz, eoq, y11 (from common to rare)
 t2 keys: hc3, 5c7, 4ji, nfi, vth, lq0, voo, nyi, 4ji, j1a, nyi, lq0, d9j, j1a, vth, vzd, cy7, d9j, voo, cy7, vzd, 8iz
 
@@ -84,6 +73,10 @@ magnara:
 this is an anagram lock, the opening message is incorrect anagram solution for: <anagram>
 
 user script to use: ast.magnara_solver dictionary.lookup
+
+# T3 locks
+
+l0ckjaw, usac, l0g, shfflr
 
 # npc
 

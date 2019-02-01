@@ -76,7 +76,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		return "Please don't target my alts with my own script, thank you very much!"
 	}
 
-	if (typeof args.noxfer == "undefined" && bal>0) 
+	if (typeof args.noxfer == "undefined" && bal>0)
 	{
 		#ms.accts.xfer_gc_to({to:args.xfer,amount:bal})
 	}
