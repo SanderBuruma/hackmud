@@ -2,7 +2,7 @@ function(context, args) // info:true
 {
 	var caller = context.caller
 	var l = #fs.scripts.lib()
-	let infoString = "This is my toolbox, current options:\n\n`AKey Loader` - `Nk3y`:`V\"string\"` - loads or unloads the first available key with that value, if available\ncubit33.toolbox {k3y:\"4jixaw\"}\n\n`AMarket Sort` - market:true, name:\"string\", key:\"key\" (the referenced key must be a number) - items are Sorted by the key:value\n/mrkt = cubit33.toolbox {market:true, name:\"k3y_v2\", key:\"k3y\"}\n\n`ATransactions` - transactions:true to see a handy display of all your transactions\n/txs = cubit33.toolbox {{transactions:true,page:{0}}}\n\n`ASafescript` - safescript:#s.user.script to check a user script and run it if it is fullsec. Include safescript_level:3 to run high sec scripts. a:[argument:value,argument2:\"string\"] to pass along arguments for the script (no spaces)\nmacro:\n/safe = cubit33.toolbox {{ safescript:#s.{0} }}\n\n`ATransfer k3ys` - a quick way to transfer all your keys to another user\n/xferk3ys = {{ k3ysxfer:#s.sys.xfer_upgrade_to, to:\"{0}\" }}"+(isCubit(caller)?"\n\nquerydb:0 to view database, add i:\"oid\" to view a specific user.":""),
+	let infoString = "This is my toolbox, current options:\n\n`AKey Loader` - `Nk3y`:`V\"string\"` - loads or unloads the first available key with that value, if available\ncubit33.toolbox {k3y:\"4jixaw\"}\n\n`AMarket Sort` - market:true, name:\"string\", key:\"key\" (the referenced key must be a number) - items are Sorted by the key:value\n/mrkt = cubit33.toolbox {market:true, name:\"k3y_v2\", key:\"k3y\"}\n\n`ATransactions` - transactions:true to see a handy display of all your transactions\n/txs = cubit33.toolbox {{transactions:{0}}}\n\n`ASafescript` - safescript:#s.user.script to check a user script and run it if it is fullsec. Include safescript_level:3 to run high sec scripts. a:[argument:value,argument2:\"string\"] to pass along arguments for the script (no spaces)\nmacro:\n/safe = cubit33.toolbox {{ safescript:#s.{0} }}\n\n`ATransfer k3ys` - a quick way to transfer all your keys to another user\n/xferk3ys = {{ k3ysxfer:#s.sys.xfer_upgrade_to, to:\"{0}\" }}"+(isCubit(caller)?"\n\nquerydb:0 to view database, add i:\"oid\" to view a specific user.":""),
 	error = true
 	#db.i({script:context.this_script,args,context})
 
@@ -43,11 +43,11 @@ function(context, args) // info:true
 	}
 	else if (args.transactions)
 	{
-		let page = args.page*100-100
+		let page = args.transactions*100-100
 		let txs = #hs.accts.transactions({count:100,start:page}), str="", count=0
 		txs.forEach(x=>
 		{
-			str+=`\n${pad(count++,2," ")} ${l.to_game_timestr(x.time)} ${x.recipient==caller?"`N in`":"`Vout`"} ${pad(x.amount,15)} ${x.recipient!=caller?x.recipient:x.sender} \`V${!!x.memo?"MEMO":" "}\``
+			str+=`\n${pad(count++,2," ")} ${l.to_game_timestr(x.time)} ${x.recipient==caller?"`N in`":"`Vout`"} ${pad(l.to_gc_str(x.amount),20)} ${x.recipient!=caller?x.recipient:x.sender} \`V${!!x.memo?"MEMO":" "}\``
 		})
 		return str
 

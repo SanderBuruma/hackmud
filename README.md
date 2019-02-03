@@ -50,7 +50,7 @@ CON_SPEC: tests you based on our class
   1.  ±1
   2.  ±2
   3.  ±1±3±1
-con spec scriptor request: (for now) #s.matr1x.cs
+con spec scriptor request: (for now) #fs.matr1x.cs
 
 sn_w_glock: your acc balance must be this amount
   ??????        3006,38,443 1963 77? 7007?
@@ -99,6 +99,15 @@ amal_robo.public,aon.public,archaic.public,bluebun.public,bunnybat_hut.public,co
 # corps general
 
 .public is the T1 area highsec area
+
+# T2 corps
+how to find T2 locs:
+find usernames from the blog page
+find the nav command
+login into the members only area and iterate through usernames until a username is found. 
+into the members area input arguments username:"<username>",<nav>:"order_qrs" (where <nav> is the nav command)
+Use dtr.qr to translate the QR codes
+input arguments username:"<username>",<nav>:"cust_service",order_id:"<orderid>" where <orderid> is an id from the dtr.qr translation and iterate through all order ids
 
 T2 areas:
 .members_only

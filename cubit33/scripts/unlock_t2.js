@@ -7,7 +7,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	colors = "red,orange,yellow,lime,green,cyan,blue,purple".split(','),
 	n1 = "is not the",
 	l0cket = "sa23uw,tvfkyq,uphlaw,vc2c7q,xwz7ja,i874y3,72umy0,5c7e1r,hc3b69,nfijix,d4bj4k,4jitu5,6hh8xw,9p65cu,j1aa4n,eoq6de,vthf6e,cmppiq,pmvr1q,afgny5,pzqsa0,voon2h,nyi5u2,vzdt6m,54r1cg,d9j270".split(','),
-	primes = [3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,57,59,61,67,71,73,79,83,89,91,97],
+	primes = [3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97],
 	calls = {
 		EZ:0,
 		c00:0,
@@ -16,7 +16,8 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		magnara:0,
 		sn_w_glock:0,
 		CON_SPEC:0,
-		acct_nt:0
+		acct_nt:0,
+		l0ckbox:0
 	},
 	rpt = {}, //rpt
 	upgrades = #hs.sys.upgrades({full:true}),
@@ -65,7 +66,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	kv["CON_SPEC"] = {call:a=>a.s.split(a.d).length-1}//credit to dtr
 
 	args=args||{}
-	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"youruserhere\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make 1GC transactions inbetween runs.\nadd noxfer:true to disable money transfers to the alt user (this disables sn_w_glock unlocking) \n\n/u2 = cubit33.unlock_t2{{target:#s.{0},report:true,xfer:\"cubit32\"}}"}
+	if(args.info || !lib.is_def(args.target)) {return "Input a target with target:#s.abandoned_jrttl_info6js9kq\nxfer:\"youruserhere\" an alt user of yours to transfer your spare cash to\nreport:true (optional) to receive detailed feedback\n\nThis script works most of the time (provided you have the keys for l0ckbox) if it doesnt work, run it a few more times and make 1GC transactions inbetween runs.\nadd noxfer:true to disable money transfers to the alt user (this disables sn_w_glock unlocking) \n\n/u2 = cubit33.unlock_t2{{target:#s.{0},report:true,xfer:\"cubit32\"}}\nnounloadk3ys:true to prevent the unloading of k3ys"}
 	if (!lib.is_def(args.xfer)) return "Please pick an xfer:\"user\" to transfer excess funds to"
 	// if (/^cubit3[2-5]$/.test(args.xfer) && !/^cubit3[3-5]$/.test(caller) || args.xfer == caller)
 	// {
@@ -80,15 +81,17 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	{
 		#ms.accts.xfer_gc_to({to:args.xfer,amount:bal})
 	}
-
-	for (let u of upgrades)
+	if (!args.nounloadk3ys == true)
 	{
-		if (u.k3y)
+		for (let u of upgrades)
 		{
-			k3ys.push(u)
-			if (u.loaded)
+			if (u.k3y)
 			{
-				#ms.sys.manage({unload:u.i})
+				k3ys.push(u)
+				if (u.loaded)
+				{
+					#ms.sys.manage({unload:u.i})
+				}
 			}
 		}
 	}
@@ -195,7 +198,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				kv["l0cket"] = l0cket.shift()
 			}
 		}
-		else if (/\+{6}/.test(rsp))//DATA_CHECL
+		else if (/\+{6}/.test(rsp))//DATA_CHECK
 		{
 			let data_check = rsp.split("\n")
 			if (data_check.length != 3)
@@ -231,6 +234,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		}
 		else if (/(spent|earned|What was|withdrawal|deposit)/.test(rsp)) //acct_nt
 		{
+			rpt["acct_nt_query"] = rsp
 			let skipTxsCalc = true
 			let count = 0
 			if (!txs) txs = #hs.accts.transactions({count:25}).map(e =>
@@ -345,9 +349,11 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		}
 		else if (rspI("magnara"))
 		{
-			let letters = /\b\w+$/.exec(rsp)[0]
-			let answers = #fs.dictionary.lookup({letters})
-			kv["magnara"] = answers.msg[Math.floor(Math.random()*answers.msg.length)]
+			let scramble = /\b\w+$/.exec(rsp)[0]
+			let answers = #fs.ast.magnara_solver({scramble})
+
+				calls["magnara"]++
+				kv["magnara"] = answers[Math.floor(Math.random()*answers.length)]
 		}
 		else if (rspI("To unlock, please load the appropriate k3y:"))
 		{
@@ -395,14 +401,15 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	// #D(rpt)
 
 	#db.i(rpt)
-	if (args.report) return rpt
+	if (args.report) {return rpt}
+	else if (!rpt.success){return rsp}
+
 
 	function rspC()
 	{
 		lastrsp = rsp
 		rsp = args.target.call(kv)
 		lastCalls++
-		return rsp
 	}
 
 	function rspI(x)

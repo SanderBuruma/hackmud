@@ -5,11 +5,12 @@ function(context, args) // target:#s.halperyon.public
 	}
 	#db.i({script:context.this_script,args,context})
 	//get starting date of script run used to measure its run time
-	let startDate = +new Date();
+	let startDate = +new Date()
 
-	var caller = context.caller;
-	var lib = #fs.scripts.lib();
-	let keyVals = {}, temp, target;
+	var caller = context.caller
+	var lib = #fs.scripts.lib()
+	let keyVals = {}, temp, target
+
 	if (args.target)
 	{
 		target = args.target
@@ -19,7 +20,7 @@ function(context, args) // target:#s.halperyon.public
 		let t1npcCorps = [];
 		let c = 0;
 		let r = lib.rand_int(0,10)
-				 if(r==c++){target = {call:x=>#fs.amal_robo.public(x)}}
+				 if(r==c++){target = {call:x=>#fs.amal_robo.public(x),name:"amal_robo"}}
 		else if(r==c++){target = {call:x=>#fs.aon.public(x)}}
 		else if(r==c++){target = {call:x=>#fs.archaic.public(x)}}
 		else if(r==c++){target = {call:x=>#fs.bluebun.public(x)}}
@@ -65,21 +66,21 @@ function(context, args) // target:#s.halperyon.public
 	}
 
 	//get the key and value info from the command input reply
-	let commands = target.call({}).match(/[a-z_]+:"?[a-z_]+"?/gi)[0].match(/\w+/gi);
-
+	let commands = #fs.cubit33.decorruptor({target,args:{}}).match(/[a-z_]+:"?[a-z_]+"?/gi)[0].match(/\w+/gi)
+	
 	//get the command values from the front page
-	let pages = target.call().split(/\n/gi).pop().match(/[a-z_]+/gi);
-
+	let pages = #fs.cubit33.decorruptor({target}).split(/\n/gi).pop().match(/[a-z_]+/gi)
+	
 	//get possible passwords
 	keyVals = {};
 	keyVals[commands[0]] = pages[1];
-	temp = target.call(keyVals);
+	temp = #fs.cubit33.decorruptor({target,args:keyVals})
 	let passwords = temp.match(/[a-z]+/gi)
 
 	//get possible projects
 	keyVals = {};
 	keyVals[commands[0]] = pages[0];
-	temp = target.call(keyVals);
+	temp = #fs.cubit33.decorruptor({target,args:keyVals})
 	if (typeof temp == "object") {
 		temp = temp.join('\n');
 	}
@@ -89,11 +90,12 @@ function(context, args) // target:#s.halperyon.public
 	keyVals = {};
 	let password;
 	keyVals[commands[0]] = commands[1];
-	while (password = passwords.pop()){
+	while (password = passwords.pop())
+	{
 		keyVals["p"] = password;
 		keyVals["pass"] = password;
 		keyVals["password"] = password;
-		temp = target.call(keyVals);
+		temp = #fs.cubit33.decorruptor({target,args:keyVals})
 		if (temp.match(/Authenticated/)){
 			passwords = password;
 			break;
@@ -105,10 +107,9 @@ function(context, args) // target:#s.halperyon.public
 
 	//find project members
 	let members = [];
-	while(
-		keyVals["project"] = projects.pop()
-	){
-		temp = target.call(keyVals);
+	while(keyVals["project"] = projects.pop())
+	{
+		temp = #fs.cubit33.decorruptor({target,args:keyVals})
 		if (typeof temp == "object") {
 			temp = temp.join('\n');
 		}

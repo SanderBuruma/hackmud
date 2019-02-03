@@ -1,26 +1,16 @@
-function(context, args)//target:#s.cyberdine.public,args:"arg1:value1,arg2:value2,arg3:value3"
+function(context, args)//target:#s.cyberdine.public,args:{arg1:value1,arg2:value2,etc3:etc3}
 {
 
 	var caller = context.caller
 	var lib = #fs.scripts.lib()
-	if (!args || !args.target)return `cubit33.decorruptor{target:#s.cyberdine.public,args:"arg1:value1,arg2:value2,arg3:value3,etc:etcetera"}\n\nArguments are optional. All values will be converted to strings\n\nmacro:\ncubit33.decorruptor {{ target:#s.{0}, args:"{1}" }}`
-	let response, response2, crp = /`.[¡¢Á¤Ã¦§¨©ª]`/g, join=false, temp=args.args, kv = {}
+	if (!args || !args.target)return `cubit33.decorruptor{target:#s.cyberdine.public,args:"arg1:value1,arg2:value2,arg3:value3,etc:etcetera"}\n\nArguments are optional. All values will be converted to strings\n\nmacro:\ncubit33.decorruptor {{ target:#s.{0}, args:{1} }}`
+	let response, response2, crp = /`.[¡¢Á¤Ã¦§¨©ª]`/g, join=false
 
 	#db.i({script:context.this_script,args,context})
 
-	if (temp) {temp.split(`,`).forEach(e=>
-		{
-			let temp2 = e.split(`:`)
-			kv[temp2[0]] = temp2[1]
-		})
-	}
-	else
-	{
-		kv=undefined
-	}
-
-	response = args.target.call(kv)
-	response2= args.target.call(kv)
+	response = args.target.call(args.args)
+	response2= args.target.call(args.args)
+	
 	if (typeof response != "string")
 	{
 		response = response.join("\n").replace(crp,"§")
@@ -47,11 +37,11 @@ function(context, args)//target:#s.cyberdine.public,args:"arg1:value1,arg2:value
 		{
 			if (join)
 			{
-				response2 = args.target.call(kv).join("\n").replace(crp,"§")
+				response2 = args.target.call(args.args).join("\n").replace(crp,"§")
 			}
 			else
 			{
-				response2 = args.target.call(kv).replace(crp,"§")
+				response2 = args.target.call(args.args).replace(crp,"§")
 			}
 			continue
 		}
