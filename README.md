@@ -115,6 +115,10 @@ T2 areas:
 .members_access
 .memberlogin
 
+T3 corps:
+brute force the pin
+
+
 
 #db
 
@@ -142,6 +146,7 @@ $1.$2\n
 1.  create_user
 2.  copy macros
 3.  trust.sentience{f1rST:"H41f",S3c0nd:"h@/_F"}
-4.  update cubit32.xfer to accept new user
-5.  /xfer 1e6
-6.  sys.init{confirm:true}
+4.  sys.migrate{confirm:true}
+5.  update cubit32.xfer to accept new user
+6.  /xfer 1e6
+7.  sys.init{confirm:true}

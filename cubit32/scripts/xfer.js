@@ -1,7 +1,7 @@
 function(context, args)
 {
 	var caller = context.caller;
-	if (/cubit3[345]/.test(caller) || context.calling_script == "cubit33.unlock_t2" && args.amount < 3007 || /41ed6f640f3d016d0f77c599ec25a560/.test(#fs.cubit33.cubit_hash128({hash:args.password})))
+	if (/cubit3[345]/.test(caller) || context.calling_script == "cubit33.unlock_t2" && args.amount < 3007 || /0578e551f8b78d47b60cc86a5d3d70a0/.test(#fs.cubit33.cubit_hash128({hash:args.password})))
 	{
 		if (!args)
 		{

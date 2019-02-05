@@ -203,7 +203,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 			let data_check = rsp.split("\n")
 			if (data_check.length != 3)
 			{
-				rpt["msg"] = "error, DATA_CHECK error, less then 3 questions"
+				rpt["msg"] = "error, DATA_CHECK error, less than 3 questions"
 				break
 			}
 			let string = "";
@@ -254,8 +254,8 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				{
 					txs = txs.map(e=>
 					{
-						e.time = Math.abs(e.time-ts)
 						e.amount = Math.abs(e.amount)
+						e.time = Math.abs(e.time-ts)-Math.floor(Math.log10(e.amount))
 						return e
 					}).sort((a,b)=>{return b.time-a.time})
 				
@@ -319,6 +319,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 				let guess = txs.slice(numLate,(-numEarly)||1e2)
 				rpt["acct_nt_rangemin"] = numLate
 				rpt["acct_nt_rangemax"] = numEarly
+				// if (numEarly - numLate < 4){skipRspC = true; continue}
 			
 				guess = guess.reduce((a,o)=>{return a+o.amount},0)
 				if (!/ net /.test(rsp)) guess = Math.abs(guess)
@@ -350,10 +351,17 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 		else if (rspI("magnara"))
 		{
 			let scramble = /\b\w+$/.exec(rsp)[0]
-			let answers = #fs.ast.magnara_solver({scramble})
-
-				calls["magnara"]++
-				kv["magnara"] = answers[Math.floor(Math.random()*answers.length)]
+			let answers
+			if (calls["magnara"] == 0)
+			{
+				answers = #fs.ast.magnara_solver({scramble})
+			}
+			else
+			{
+				answers = [lib.shuffle(scramble.split("")).join("")]
+			}
+			calls["magnara"]++
+			kv["magnara"] = answers[Math.floor(Math.random()*answers.length)]
 		}
 		else if (rspI("To unlock, please load the appropriate k3y:"))
 		{
@@ -397,7 +405,7 @@ function(context, args) //info:false,target:#s.unknown_jrttl_820zd5.entry_97kjq3
 	rpt["target"] = args.target.name
 	rpt["xfer"] = args.xfer
 	rpt["script"] = context.this_script
-	rpt["version"] = 2
+	rpt["version"] = 3
 	// #D(rpt)
 
 	#db.i(rpt)

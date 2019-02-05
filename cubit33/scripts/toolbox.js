@@ -88,6 +88,7 @@ function(context, args) // info:true
 				{
 					if (i.name.includes("k3y")) k3ys.push(i.i)
 				}
+				#ms.sys.manage({unload:k3ys})
 				return args.k3ysxfer.call({to:args.to,i:k3ys})
 			}
 			else
