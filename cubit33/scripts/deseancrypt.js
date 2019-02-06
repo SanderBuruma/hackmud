@@ -63,7 +63,7 @@ function(context, args) // key:"iG1AmNA",str:"encryptedstring"
 			let illegalCount = 	(s.match(regexIllegal)||[]).length
 			let otherCount = 		(s.match(/[^\w\d-+_/?\[\](){}|\\<>]/g)||[]).length
 			// #D({illegalCount,otherCount,len:s.length,s})
-			if (/invitees/.test(s)) returnArray.push({s,i,otherCount,illegalCount,len:s.length,t:"b64"}) //base64 converted
+			if (/invitees/.test(s)||/\w{4,}.? \w{4,}/.test(s)) returnArray.push({s,i,otherCount,illegalCount,len:s.length,t:"b64"}) //base64 converted
 			else if (/\/{6,}/.test(s)) returnArray.push({s,i,t:"b64:jpeg||png"})
 			else discardArr.push(s)
 		}

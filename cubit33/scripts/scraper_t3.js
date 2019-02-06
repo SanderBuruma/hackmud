@@ -16,8 +16,9 @@ function(context, args) //t:#s.context.internal
 	// si.ids = []
 	// si.enumeration = -8
 	// si.enumeration2 = 0
+	// si.rts = 4
 
-	if (!si || currentDate - si.lastRunDate > 3600e3 || (args && args.reset === true))
+	if (!si || currentDate - si.lastRunDate > 144e5 || (args && args.reset === true))
 	{
 		si = {script:context.this_script,caller,lastRunDate:currentDate,rts:0,username:0,pin:0,ids:[],enumeration:-8,enumeration2:0,idInfos:[],kv:{}} // rts=runTimeState
 	}
@@ -89,11 +90,11 @@ function(context, args) //t:#s.context.internal
 			// return si
 			let backupserver = false
 			si.idInfos.forEach(x=>{
-				if (x.includes(targetName+".")) backupserver = x.match(new RegExp(targetName+"\.[a-z0-9_]*","g"))
+				if (x.includes(targetName+".")) backupserver = x.match(new RegExp(targetName+"\.[a-z0-9_]*","g"))[0]
 			})
 			if (!backupserver)
-			{	
-				throw si.idInfos.filter(x=>x.includes(targetName)).join("\n")+"\n\n`Dno backup server`"
+			{
+				// return si.idInfos.filter(x=>x.includes(targetName)).slice(0,100)
 				// throw "no backupserver"
 				si.pin=0
 				si.username++
@@ -104,19 +105,60 @@ function(context, args) //t:#s.context.internal
 			}
 			else
 			{
+				si.bs = backupserver
 				si.rts++
 			}
 		}
 		else if (si.rts == 5) //output the name of the backup server and request the user input it as a scriptor
 		{
-			si.bs = backupserver
 			si.kv2 = {pin:si.kv.pin}
 			break
 		}
-		else if (si.rts == 6)
+		else if (si.rts == 6) //scrape the backup server for key
 		{
-			if (typeof args.bs == "undefined") throw `runstate 6 requires bs:something argument, please input ,bs:#s.${si.rts} into the argument field of this script`
+			if (typeof args.bs == "undefined") throw `runstate 6 requires bs:something argument, please input ,bs:#s.${si.bs} into the argument field of this script`
 			bsc()
+			si.kv2.i = parseInt(rsp.split("\n").filter(x=>/key/.test(x)).join("\n").substr(0,2))
+			let key
+			while (true)
+			{
+				bsc()
+				rsp.split("\n").forEach(x=>{if (x.length==7&&/[a-z\d+/]/i.test(x)) key = x})
+				if (typeof key == "string" && key.length == 7) break//if key is invalid, repeat
+			}
+			si.key = key
+			si.rts++
+			si.enumeration = 0
+		}
+		else if (si.rts == 7) //decrypt idinfos
+		{
+			let str = si.idInfos[si.enumeration]
+			if (!str.includes("invitee:"))
+			{
+				str = #fs.cubit33.deseancrypt({key:si.key,str})
+				if (typeof str.returnArray == "undefined" || str.returnArray.length==0) {/*continue*/}
+				else si.idInfos[si.enumeration] = str.returnArray[0].s
+			}
+
+			si.enumeration++
+			if (si.enumeration >= si.idInfos.length) si.rts++
+		}
+		else if (si.rts == 8)
+		{
+			let strings = si.idInfos.filter(x=>/[^a-z\d+/=]/i.test(x)).map(x=>x.split("\n")[0])
+			// return si.idInfos.slice(300,400)//.length
+			let tempArr = [], resultArr = []
+			strings.forEach(x=>{if (tempArr.indexOf(x) == -1) tempArr.push(x)})
+			si.kv.perform = "enhance"
+			si.kv.a_t = "t_st"
+			//si.kv.flow = ???
+			tempArr.forEach(x=>
+			{
+				si.kv.passphrase = x
+				resultArr.push(args.t.call(si.kv)+si.kv.passphrase)
+			})
+			return resultArr
+			// throw "end of script"	
 		}
 	}
 
@@ -129,7 +171,7 @@ function(context, args) //t:#s.context.internal
 	#db.r({script:context.this_script,caller})
 	#db.i(si)
 
-	if (si.rts==6) throw  `please input ,bs:#s.${si.rts} into the argument field of this script`
+	if (si.rts==6) throw  `please input ,bs:#s.${si.bs} into the argument field of this script`
 	else return { timeout, callCount, rts:si.rts, kv:si.kv, enum:si.enumeration, idsLen:si.ids.length }
 
 	function tc() // target call
@@ -139,8 +181,8 @@ function(context, args) //t:#s.context.internal
 	}
 	function bsc()
 	{
-		callCount+=10
-		rsp = #fs.cubit33.decorruptor({target:args.bs,args:si.kv2})
+		callCount+=2
+		rsp = args.bs.call(si.kv2)
 	}
 	function pad(num, size, char)
 	{
