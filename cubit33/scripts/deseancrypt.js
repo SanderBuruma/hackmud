@@ -1,38 +1,76 @@
-function(context, args) // key:"iG1AmNA",string:"encryptedstring"
+function(context, args) // key:"iG1AmNA",str:"encryptedstring"
 {
-
 	let base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+	let regexIllegal = /[ÀºÍª¨õÚßúÊ¶çì¹Ù½ÄÞÂÓã¡äæáÒ»­¿ÇÌóø¤©£þïÝàÛù¢¸âåÅðË§¯Ôè³òü¥Ü²ë÷×ÿÁÃ·û¬ÕÏØýÑñé®µÐîêö°Öí¾Æ´«Î¼ô]/g
 
-	let string
 	let key = args.key
-	key = key.split("")
+		.split("")
 		.map(x=>base64.indexOf(x))
-	let returnString = ""
+	let returnArray = [], discardArr = []
 	let keyVariations = 
-	["0",
-	"0246135",
-	"0123456601234556012344560123345601223456011234560",
-	"0123456123456023456013456012456012356012346012345",
-	"01234456011234556012234566012334560",
-	"012456123560234601345",
-	"012234456601123345560",
-	"01234601235601245601345602345612345"]
+	["0", //only the first char of the key
+	"0246135", // skipNKey, shift:1 addmode:true, skips every 2nd
+	"0123456601234556012344560123345601223456011234560", //rotateKey shift:1, repeats every 6th keychar
+	"0123456123456023456013456012456012356012346012345", //skips every 8th
+	"01234456011234556012234566012334560", //repeats every 5th
+	"012456123560234601345", //skips every 7th
+	"012234456601123345560", //repeats every 2nd
+	"01234601235601245601345602345612345"] //skipNKey, shift:1, skips every 6th
 
 	for (let i of keyVariations)
 	{
-		let count = i
-		string = args.string.split("")
+		let count = -1,
+		string2 = [],
+		string = args.str.split("")
 			.map(x=>base64.indexOf(x))
-			.map(x=>(x+i[count++%i.length])%base64.length)
+			.map(x=>
+			{
+				string2.push((x-key[i[++count%i.length]]+base64.length)%base64.length)
+				return 			(x+key[i[count%i.length]])%base64.length
+			})
+			.map(x=>base64[x])
+			.join("")
+		
+		string2 = string2
 			.map(x=>base64[x])
 			.join("")
 
-			returnString += decrypt64(string)+"\n\n"
+		// return {string,string2,count}
+		discardArr.push("decode")
+		testString(string,i)
+		discardArr.push("encode")
+		testString(string2,i)
+		if (returnArray.length>0) break
 	}
 
-	return returnString
+	let decode
+	if (discardArr.join("").includes("decodeencode")) decode=true 
+	else 																							decode=false
+	let ms = Date.now()-_START
+	// #D({discardArr})
+	let count = 0
+	discardArr = discardArr.map(x=>count++ +" "+ x)
+	// return discardArr
+	return {decode,ms,returnArray,discardArr}
 
-	function decrypt64(s){
+	function testString (s,i)
+	{
+		if ((s.match(/\+/g)||[]).length/s.length > .10) returnArray.push({s,i,t:"plain"}) // plain text
+		else if (/\/{6,}/.test(s)) returnArray.push({s,i,t:"jpeg||png"}) // jpeg or png file
+		else
+		{
+			s = decrypt64(s)
+			let illegalCount = 	(s.match(regexIllegal)||[]).length
+			let otherCount = 		(s.match(/[^\w\d-+_/?\[\](){}|\\<>]/g)||[]).length
+			// #D({illegalCount,otherCount,len:s.length,s})
+			if (/invitees/.test(s)) returnArray.push({s,i,otherCount,illegalCount,len:s.length,t:"b64"}) //base64 converted
+			else if (/\/{6,}/.test(s)) returnArray.push({s,i,t:"b64:jpeg||png"})
+			else discardArr.push(s)
+		}
+	}
+
+	function decrypt64(s)
+	{ //i don't take credit for this, this is not cubit32's code
 		var e={},i,b=0,c,x,l=0,a,r='',w=String.fromCharCode,L=s.length;
 		var A="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 		for(i=0;i<64;i++){e[A.charAt(i)]=i;}

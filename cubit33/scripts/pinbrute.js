@@ -49,7 +49,7 @@ function(context, args)// targetL#s.aon.internal,username:"thugluv4ever"
 
 		//jermaine 3164
 
-		// #db.r({script:context.this_script})
+		#db.r({script:context.this_script})
 		let scrapeInfo = #db.f({script:context.this_script}).first()
 		if (!scrapeInfo)
 		{
@@ -75,16 +75,16 @@ function(context, args)// targetL#s.aon.internal,username:"thugluv4ever"
 			scrapeInfo.idInfos.push(response)
 		}
 
-		// while (!tmo() && scrapeInfo.enumeration == 8 && scrapeInfo.ids.length==0 && scrapeInfo.enumeration2 < scrapeInfo.idInfos.length)
-		// {
-		// 	let str = scrapeInfo.idInfos[scrapeInfo.enumeration2]
-		// 	if (str.indexOf("invitees") == -1)
-		// 	{
-		// 		let response = #fs.dtr.deseancrypt({key:"iG1AmNA",str})
-		// 		scrapeInfo.idInfos[scrapeInfo.enumeration2] = response.text
-		// 	}
-		// 	scrapeInfo.enumeration2++
-		// }
+		while (!tmo() && scrapeInfo.enumeration == 8 && scrapeInfo.ids.length==0 && scrapeInfo.enumeration2 < scrapeInfo.idInfos.length)
+		{
+			let str = scrapeInfo.idInfos[scrapeInfo.enumeration2]
+			if (str.indexOf("invitees") == -1)
+			{
+				let response = #fs.cubit33.deseancrypt({key:"iG1AmNA",str})
+				scrapeInfo.idInfos[scrapeInfo.enumeration2] = response.text
+			}
+			scrapeInfo.enumeration2++
+		}
 		
 		#db.us({script:context.this_script}, {$set:{ids:scrapeInfo.ids,enumeration:scrapeInfo.enumeration,enumeration2:scrapeInfo.enumeration2,idInfos:scrapeInfo.idInfos}})
 		// return {timeout,scrapeInfo}
