@@ -1,0 +1,48 @@
+fs
+scripts.fullsec
+hl
+kernel.hardline
+dc
+kernel.hardline {dc:true}
+upgs
+sys.upgrades
+sl
+scripts.get_level {{name:"{0}"}}
+t1list
+net.locs{locs:true, tier:1, Ntype:"npc"}
+datac
+lore.data_check {{lookup:"{0}" }}
+gl
+scripts.get_level {{name:"{0}"}}
+bal
+accts.balance
+load
+sys.manage{{load:[{0}] }}
+unload
+sys.manage{{unload:[{0}] }}
+cull
+sys.cull{{i:[{0}], confirm:true }}
+u
+sys.upgrades{{ i:{0} }}
+h
+cubit32.test{{ target:#s.{0} }}
+mb
+market.browse{{name:"{0}"}}
+mbi
+market.browse{{i:"{0}"}}
+hmatr1x
+matr1x.t1_fast {{ t:[#s.{0},#s.{1},#s.{2},#s.{3}] }}
+cullall
+sys.cull{i:[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31], confirm:true }
+r
+sys.manage {{reorder : [[{0},{1}]]}}
+mm
+chats.send {{ channel:"magnificent_mansion", msg:"{$}" }}
+decor
+cubit32.decorruptor{{target:#s.{0},args:{$} }}
+scrape
+cubit32.t1_scrape {{ target:#s.{0}.public }}
+scrapewlf
+cubit32.t1_scrape {{ target:#s.{0}.public, wlf:true }}
+scrapewvr
+cubit32.t1_scrape {{ target:#s.{0}.public, wvr:true }}
