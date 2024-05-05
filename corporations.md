@@ -2,15 +2,12 @@ amal_robo.public
 aon.public
 archaic.public
 bluebun.public
-bunnybat_hut.public
 context.public
 core.public
 cyberdine.public
 empty_nest.public
-etceteraco.public
 futuretech.public
 goodfellow.public
-grid.public
 halperyon.public
 kill_9_1.public
 kill_bio.public
@@ -42,10 +39,3 @@ weathernet.public
 welsh_measles_info.public
 weyland.public
 world_pop.public
-charity.public
-mona.public
-nsa.public
-we_ltd.public
-ast.public
-foxb0x.public
-jumpsplat120.public

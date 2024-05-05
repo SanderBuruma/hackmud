@@ -8,8 +8,13 @@ function(context, args)//target:#s.cyberdine.public,args:{arg1:value1,arg2:value
 
 	#db.i({script:context.this_script,args,context})
 
-	response = args.target.call(args.args)
-	response2= args.target.call(args.args)
+	if (args) {
+		response = args.target.call(args.args)
+		response2= args.target.call(args.args)
+	} else {
+		response = args.target.call()
+		response2= args.target.call()
+	}
 	
 	if (typeof response != "string")
 	{
@@ -25,7 +30,7 @@ function(context, args)//target:#s.cyberdine.public,args:{arg1:value1,arg2:value
 
 	while (Date.now()-_START<3900)
 	{
-	
+		
 		let corIndex = response.indexOf("§")
 		if (corIndex == -1)
 		{
@@ -37,16 +42,24 @@ function(context, args)//target:#s.cyberdine.public,args:{arg1:value1,arg2:value
 		{
 			if (join)
 			{
-				response2 = args.target.call(args.args).join("\n").replace(crp,"§")
+				if (args) {
+					response2 = args.target.call(args.args).join("\n").replace(crp,"§")
+				} else {
+					response2 = args.target.call().join("\n").replace(crp,"§")
+				}
 			}
 			else
 			{
-				response2 = args.target.call(args.args).replace(crp,"§")
+				if (args) {
+					response2 = args.target.call(args.args).replace(crp,"§")
+				} else {
+					response2 = args.target.call().replace(crp,"§")
+				}
 			}
 			continue
 		}
-	
-    response = replaceAt(response,corIndex,r2char)
+		
+		response = replaceAt(response,corIndex,r2char)
 
 	}
 	return response
