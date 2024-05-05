@@ -1,7 +1,7 @@
 function(context, args)
 {
 	var caller = context.caller;
-	if (!/cubit3[345]/.test(caller))
+	if (!/^cubit3[345]$/.test(caller))
 	{
 		return "You are not an approved user of this script\n\nSource code:\n" + fs.scripts.quine()
 	}
