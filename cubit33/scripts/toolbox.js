@@ -5,9 +5,9 @@ function(context, args) //t:#s.context.internal
     let _start = Date.now()
     let msg = ''
 	#db.i({script:context.this_script,args,context,date:Date.now()})
+    // Select the code block to run
     if (!args) {
         msg += quine.man
-
     } else if (args.t2_corps) {
         let corps = quine.corps.split(',')
         let suffixes = quine.suffixes.split(',')
@@ -78,17 +78,18 @@ function(context, args) //t:#s.context.internal
             msg += k.i + ' ' + k.k3y + '\n'
         }
     } else if (args.k3y) {
-        if (i.length > 0) {
-            #ms.sys.manage({load:i[0].i})
-            msg += `${i[0].i}:"${i[0].k3y}" loaded`
+        let k3ys = #hs.sys.upgrades().filter(x=>/k3y/.test(x.name)).map(x=>#hs.sys.upgrades({i:x.i})).filter(k=>k.k3y==args.k3y)
+        if (k3ys.length > 0 && !k3ys[0].loaded) {
+            #ms.sys.manage({load:k3ys[0].i})
+            msg += `${k3ys[0].i}:"${k3ys[0].k3y}" loaded`
         }
     } else {
-        return {ok:false, msg: 'Invalid argument, please rerun without arguments'}
+        return {ok:false, msg: quine.man}
     }
 
     // Filter output by regex
     if (args && args.regex) {
-        msg = msg.split('\n').filter(x=>new RegExp(args.regex).test(x)).join('\n')
+        msg = msg.split('\n').filter(x=>new RegExp(args.regex).test(x)).sort().join('\n')
     }
     // Reduce output if necessary
     if (msg.length > 20000) {
