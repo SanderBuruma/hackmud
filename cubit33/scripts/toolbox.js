@@ -44,7 +44,7 @@ function(context, args) //t:#s.context.internal
         for (let u of qru) {
             q = 'order_qrs'
             dt('username:"'+u+'"')
-            let a = {username:u, user: u, u:u, action:q, entry:q, navigation:q, nav:q, get:q, command:q, see:q}
+            let a = {username:u, user: u, u:u, action:q, entry:q, navigation:q, nav:q, get:q, command:q, cmd:q, see:q}
             let test = target.call(a)
             if (!/▀/.test(test)) continue
             let rsp = #fs.dtr.qr({t:target,a})
@@ -53,7 +53,7 @@ function(context, args) //t:#s.context.internal
             q = 'cust_service'
             for (let o of oids) {
                 dt('order_id:"'+o+'"')
-                let a = {order_id: o, username:u, user: u, u:u, action:q, entry:q, navigation:q, nav:q, get:q, command:q, see:q}
+                let a = {order_id: o, username:u, user: u, u:u, action:q, entry:q, navigation:q, nav:q, get:q, command:q, cmd:q, see:q}
                 let rsp2 = #fs.cubit33.decorruptor({target:target,args:a})
                 try {
                     rsp2 = rsp2.split('\n')[1].split(': ')[1].split(' ')
